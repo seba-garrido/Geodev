@@ -35,7 +35,7 @@ App {
 
     property FileFolder sqlFolder: AppFramework.userHomeFolder.folder("ArcGIS/Data/Sql")
     property SqlTableModel sqlTableModel
-    property string fecha: '27/08/2022'
+    //property string fecha: '27/08/2022'
 
     SqlDatabase{
         id: db
@@ -143,10 +143,8 @@ App {
                                     comboboxFechaInicio.displayText = "Personalizada"
                                     comboboxFechaInicio.currentIndex = 1
 
-                                    datePickerInicio.set(new Date().toLocaleString(
+                                    datePickerFechaAsignacion.set(new Date().toLocaleString(
                                                              Qt.locale("es_CL"), "yyyy-MM-dd"))
-                                    datePickerTermino.set(new Date().toLocaleString(
-                                                              Qt.locale("es_CL"), "yyyy-MM-dd"))
 
                                     popupDatePicker.open()
                                 }
@@ -154,99 +152,90 @@ App {
                         }
         }
 
-                        Popup {
-                            id: popupDatePicker
+            Popup {
+                    id: popupDatePicker
 
-                            anchors.centerIn: parent
-                            focus: true
-                            modal: true
+                    anchors.centerIn: parent
+                    focus: true
+                    modal: true
 
-                            width: 600
-                            height: 500
+                    width: 400
+                    height: 400
 
+                    Column {
+                        anchors.fill: parent
+
+                        spacing: 100
+
+                        Row {
+                            anchors.fill: parent
+                            anchors.topMargin: 20
+                            height: 100
                             Column {
-                                anchors.fill: parent
+                                width: parent.width
 
-                                spacing: 100
+                                Text {
 
-                                Row {
-                                    anchors.fill: parent
-                                    anchors.topMargin: 20
-                                    height: 100
-                                    Column {
-                                        width: parent.width
-
-                                        Text {
-
-                                            text: "Seleccione un Rango de Fecha"
-                                            font.pixelSize: 20
-                                            anchors.centerIn: parent
-                                        }
-                                    }
-                                }
-                                Row {
-                                    anchors.fill: parent
-                                    anchors.topMargin: 100
-                                    spacing: 50
-                                    Column {
-                                        DatePicker {
-                                            id: datePickerInicio
-                                            width: 250
-                                            height: 250
-                                        }
-                                    }
-                                    Column {
-
-                                        DatePicker {
-                                            id: datePickerTermino
-                                            width: 250
-                                            height: 250
-                                        }
-                                    }
-                                }
-                                Row {
-                                    anchors.fill: parent
-                                    anchors.topMargin: 350
-
-                                    Button {
-                                                        id: buttonPopupFiltrar
-                                                        text: qsTr("FILTRAR")
-                                                        anchors.centerIn: parent
-
-                                                        contentItem: Text {
-                                                            text: buttonPopupFiltrar.text
-                                                            font: buttonPopupFiltrar.font
-                                                            color: "white"
-                                                            horizontalAlignment: Text.AlignHCenter
-                                                            verticalAlignment: Text.AlignVCenter
-                                                            elide: Text.ElideRight
-                                                        }
-
-                                                        background: Rectangle {
-                                                            implicitWidth: 214
-                                                            implicitHeight: 38
-                                                            color: "#F28623"
-                                                            radius: 3
-                                                            opacity: 1
-                                                        }
-                                                        onClicked: {
-                                                            fechaInicioPicker = datePickerInicio.get()
-                                                            fechaTerminoPicker = datePickerTermino.get()
-
-                                                            filter(comboboxZona.currentText,
-                                                                   comboboxLinea.currentText,
-                                                                   comboboxActividad.currentText,
-                                                                   comboboxEquipo.currentText,
-                                                                   comboboxMantenedores.currentText,
-                                                                   comboboxFechaInicio.currentText, "FechaTermino",
-                                                                   "Todos") // filter(zona,linea,actividad,equipo,mantenedor,fechaInicio,fechaTermino,origen)
-
-                                                            popupDatePicker.close()
-                                                        }
-                                                    }
+                                    text: "Seleccione una Fecha"
+                                    font.pixelSize: 20
+                                    anchors.centerIn: parent
                                 }
                             }
                         }
+                        Row {
+                            anchors.fill: parent
+                            anchors.topMargin: 50
+                            Column {
+                                anchors.centerIn: parent
+
+                                DatePicker {
+                                    id: datePickerFechaAsignacion
+                                    width: 250
+                                    height: 250
+                                }
+                            }
+                        }
+                        Row {
+                            anchors.fill: parent
+                            anchors.topMargin: 350
+
+                            Button {
+                                                id: buttonPopupSeleccionar
+                                                text: qsTr("SELECCIONAR")
+                                                anchors.centerIn: parent
+
+                                                contentItem: Text {
+                                                    text: buttonPopupSeleccionar.text
+                                                    font: buttonPopupSeleccionar.font
+                                                    color: "white"
+                                                    horizontalAlignment: Text.AlignHCenter
+                                                    verticalAlignment: Text.AlignVCenter
+                                                    elide: Text.ElideRight
+                                                }
+
+                                                background: Rectangle {
+                                                    implicitWidth: 214
+                                                    implicitHeight: 38
+                                                    color: "#F28623"
+                                                    radius: 3
+                                                    opacity: 1
+                                                }
+                                                onClicked: {
+                                                    getLunes(datePickerFechaAsignacion.get())
+                                                    getMartes(datePickerFechaAsignacion.get())
+                                                    getMiercoles(datePickerFechaAsignacion.get())
+                                                    getJueves(datePickerFechaAsignacion.get())
+                                                    getViernes(datePickerFechaAsignacion.get())
+                                                    getSabado(datePickerFechaAsignacion.get())
+                                                    getDomingo(datePickerFechaAsignacion.get())
+                                                    //comboboxAssignFecha.displayText = fechaAsignacionOT.toLocaleString(Qt.locale("es_CL"),"dd-MM-yyyy")
+
+                                                    popupDatePicker.close()
+                                                }
+                                            }
+                        }
+                    }
+                }
 
                         Rectangle{
                             id: rango_fecha
@@ -258,30 +247,30 @@ App {
                             border.color: "dimgrey"
 
                             Text {
-                                id: fecha
+                                id: fecha_inicio
                                 width: rango_fecha/4
                                 height: 20
-                                text: getLunes()
+                                text: ""
                                 color: "black"
                                 font.pixelSize: 14
                                 x: 100
-                                y: (rango_fecha.height-fecha.height)/2
+                                y: (rango_fecha.height-fecha_inicio.height)/2
                             }
                             Text {
                                 id: guion
                                 text: qsTr("---")
                                 x: 175
-                                y: (rango_fecha.height-fecha.height)/2+1
+                                y: (rango_fecha.height-fecha_inicio.height)/2+1
                             }
                             Text {
-                                id: fecha2
+                                id: fecha_final
                                 width: rango_fecha/4
                                 height: 20
-                                text: getDomingo()
+                                text: ""
                                 color: "black"
                                 font.pixelSize: 14
                                 x: 200
-                                y: (rango_fecha.height-fecha.height)/2
+                                y: (rango_fecha.height-fecha_final.height)/2
                             }
 
                             Rectangle{
@@ -411,8 +400,8 @@ App {
                                     y: 5
                                 }
                                 Text {
-                                    id: fecha_cuadro2
-                                    text: getLunes(fecha)
+                                    id: fecha_lunes
+                                    text: ""
                                     color: "white"
                                     font.pixelSize: 12
                                     x: 25
@@ -439,8 +428,8 @@ App {
                                     y: 5
                                 }
                                 Text {
-                                    id: fecha_cuadro3
-                                    text: getMartes(fecha)
+                                    id: fecha_martes
+                                    text: ""
                                     color: "white"
                                     font.pixelSize: 12
                                     x: 25
@@ -467,8 +456,8 @@ App {
                                     y: 5
                                 }
                                 Text {
-                                    id: fecha_cuadro4
-                                    text: getMiercoles(fecha)
+                                    id: fecha_miercoles
+                                    text: ""
                                     color: "white"
                                     font.pixelSize: 12
                                     x: 25
@@ -495,8 +484,8 @@ App {
                                     y: 5
                                 }
                                 Text {
-                                    id: fecha_cuadro5
-                                    text: getJueves(fecha)
+                                    id: fecha_jueves
+                                    text: ""
                                     color: "white"
                                     font.pixelSize: 12
                                     x: 25
@@ -523,8 +512,8 @@ App {
                                     y: 5
                                 }
                                 Text {
-                                    id: fecha_cuadro6
-                                    text: getViernes(fecha)
+                                    id: fecha_viernes
+                                    text: ""
                                     color: "white"
                                     font.pixelSize: 12
                                     x: 25
@@ -551,8 +540,8 @@ App {
                                     y: 5
                                 }
                                 Text {
-                                    id: fecha_cuadro7
-                                    text: getSabado(fecha)
+                                    id: fecha_sabado
+                                    text: ""
                                     color: "white"
                                     font.pixelSize: 12
                                     x: 25
@@ -578,8 +567,8 @@ App {
                                     y: 5
                                 }
                                 Text {
-                                    id: fecha_cuadro8
-                                    text: getDomingo(fecha)
+                                    id: fecha_domingo
+                                    text: ""
                                     color: "white"
                                     font.pixelSize: 12
                                     x: 20
@@ -868,8 +857,9 @@ App {
     }
 
     function epoch (date) {
-          //return Date.parse(date)
             var result = date.valueOf()
+            var resultado = Number(result) - 1658789121600000
+            console.log("el resultado es: "+resultado)
             return result
         }
 
@@ -899,22 +889,17 @@ App {
             else{
                 return "x.jpg"
             }
-
-          //return "x.jpg"
         }
         if(numero === 0){
             return "alerta.jpg"
         }
-        /*if(numero === 2){
-            return "alerta.jpg"
-        }*/
-
 
     }
 
     function getLunes(fecha) {
           //const date = new Date(parseInt(fecha)).toLocaleString(Qt.locale("es_CL"),"dd-MM-yyyy")
-          const date = new Date();
+          const date = fecha;
+          console.log(fecha)
           const today = date.getDate();
           const currentDay = date.getDay();
           const newDate = date.setDate(today - currentDay + 1);
@@ -923,10 +908,14 @@ App {
           var month = date.getMonth() + 1;
           var day = date.getDate();
           var lunes_final = `${day}/${month}/${year}`;
-          return lunes_final;
+          fecha_lunes.text = lunes_final;
+          fecha_inicio.text = lunes_final;
+          console.log(lunes.valueOf())
+          return lunes;
         }
-        function getMartes() {
-          const date = new Date();
+     function getMartes(fecha) {
+          const date = fecha;
+          //console.log(fecha)
           const today = date.getDate();
           const currentDay = date.getDay();
           const newDate = date.setDate(today - currentDay + 2);
@@ -935,10 +924,12 @@ App {
           var month = date.getMonth() + 1;
           var day = date.getDate();
           var martes_final = `${day}/${month}/${year}`;
-          return martes_final;
+          fecha_martes.text = martes_final;
+          console.log(martes.valueOf())
+          return martes;
         }
-        function getMiercoles() {
-          const date = new Date();
+     function getMiercoles(fecha) {
+          const date = fecha;
           const today = date.getDate();
           const currentDay = date.getDay();
           const newDate = date.setDate(today - currentDay + 3);
@@ -947,10 +938,12 @@ App {
           var month = date.getMonth() + 1;
           var day = date.getDate();
           var miercoles_final = `${day}/${month}/${year}`;
-          return miercoles_final;
+          fecha_miercoles.text = miercoles_final;
+          console.log(miercoles.valueOf())
+          return miercoles;
         }
-        function getJueves() {
-          const date = new Date();
+     function getJueves(fecha) {
+          const date = fecha;
           const today = date.getDate();
           const currentDay = date.getDay();
           const newDate = date.setDate(today - currentDay + 4);
@@ -959,10 +952,12 @@ App {
           var month = date.getMonth() + 1;
           var day = date.getDate();
           var jueves_final = `${day}/${month}/${year}`;
-          return jueves_final;
+          fecha_jueves.text = jueves_final;
+          console.log(jueves.valueOf())
+          return jueves;
         }
-        function getViernes() {
-          const date = new Date();
+     function getViernes(fecha) {
+          const date = fecha;
           const today = date.getDate();
           const currentDay = date.getDay();
           const newDate = date.setDate(today - currentDay + 5);
@@ -971,10 +966,12 @@ App {
           var month = date.getMonth() + 1;
           var day = date.getDate();
           var viernes_final = `${day}/${month}/${year}`;
-          return viernes_final;
+          fecha_viernes.text = viernes_final;
+          console.log(viernes.valueOf())
+          return viernes;
         }
-        function getSabado() {
-          const date = new Date();
+     function getSabado(fecha) {
+          const date = fecha;
           const today = date.getDate();
           const currentDay = date.getDay();
           const newDate = date.setDate(today - currentDay + 6);
@@ -983,10 +980,12 @@ App {
           var month = date.getMonth() + 1;
           var day = date.getDate();
           var sabado_final = `${day}/${month}/${year}`;
-          return sabado_final;
+          fecha_sabado.text = sabado_final;
+          console.log(sabado.valueOf())
+          return sabado;
         }
-        function getDomingo() {
-          const date = new Date();
+     function getDomingo(fecha) {
+          const date = fecha;
           const today = date.getDate();
           const currentDay = date.getDay();
           const newDate = date.setDate(today - currentDay + 7);
@@ -995,7 +994,10 @@ App {
           var month = date.getMonth() + 1;
           var day = date.getDate();
           var domingo_final = `${day}/${month}/${year}`;
-          return domingo_final;
+          fecha_domingo.text = domingo_final;
+          fecha_final.text = domingo_final;
+          console.log(domingo.valueOf())
+          return domingo;
         }
 
     ListModel{
@@ -1005,51 +1007,50 @@ App {
     function loadPreuso(){
         db.open()
 
-        //let q1 = db.query("SELECT equipo, (SELECT count(temp_preuso.equipo) FROM temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = '"+getLunes(fecha)+"') AS lunes FROM app_equipo")
         let q1 = db.query("SELECT equipo,
 
-(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = '1660478400000') AS lunes_preuso,
-(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = '1660478400000' AND temp_preuso.observaciones IS NOT NULL ) AS lunes_noconf
+(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = "+getLunes(datePickerFechaAsignacion.get()).valueOf()+") AS lunes_preuso,
+(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = "+getLunes(datePickerFechaAsignacion.get()).valueOf()+" AND temp_preuso.observaciones IS NOT NULL ) AS lunes_noconf
 
 FROM app_equipo")
 
 
         let q2 = db.query("SELECT equipo,
 
-(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = '1660478400000') AS martes_preuso,
-(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = '1660478400000' AND temp_preuso.observaciones IS NOT NULL ) AS martes_noconf
+(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = "+getMartes(datePickerFechaAsignacion.get()).valueOf()+") AS martes_preuso,
+(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = "+getMartes(datePickerFechaAsignacion.get()).valueOf()+" AND temp_preuso.observaciones IS NOT NULL ) AS martes_noconf
 
  FROM app_equipo")
 
 
         let q3 = db.query("SELECT equipo,
-(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = '1660478400000') AS miercoles_preuso,
-(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = '1660478400000' AND temp_preuso.observaciones IS NOT NULL ) AS miercoles_noconf
+(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = "+getMiercoles(datePickerFechaAsignacion.get()).valueOf()+") AS miercoles_preuso,
+(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = "+getMiercoles(datePickerFechaAsignacion.get()).valueOf()+" AND temp_preuso.observaciones IS NOT NULL ) AS miercoles_noconf
 
 FROM app_equipo")
 
 
         let q4 = db.query("SELECT equipo,
-(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = '1660478400000') AS jueves_preuso,
-(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = '1660478400000' AND temp_preuso.observaciones IS NOT NULL ) AS jueves_noconf
+(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = "+getJueves(datePickerFechaAsignacion.get()).valueOf()+") AS jueves_preuso,
+(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = "+getJueves(datePickerFechaAsignacion.get()).valueOf()+" AND temp_preuso.observaciones IS NOT NULL ) AS jueves_noconf
 
 FROM app_equipo")
 
         let q5 = db.query("SELECT equipo,
-(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = '1660478400000') AS viernes_preuso,
-(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = '1660478400000' AND temp_preuso.observaciones IS NOT NULL ) AS viernes_noconf
+(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = "+getViernes(datePickerFechaAsignacion.get()).valueOf()+") AS viernes_preuso,
+(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = "+getViernes(datePickerFechaAsignacion.get()).valueOf()+" AND temp_preuso.observaciones IS NOT NULL ) AS viernes_noconf
 
 FROM app_equipo")
 
         let q6 = db.query("SELECT equipo,
-(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = '1660478400000') AS sabado_preuso,
-(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = '1660478400000' AND temp_preuso.observaciones IS NOT NULL ) AS sabado_noconf
+(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = "+getSabado(datePickerFechaAsignacion.get()).valueOf()+") AS sabado_preuso,
+(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = "+getSabado(datePickerFechaAsignacion.get()).valueOf()+" AND temp_preuso.observaciones IS NOT NULL ) AS sabado_noconf
 
 FROM app_equipo")
 
         let q7 = db.query("SELECT equipo,
-(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = '1660478400000') AS domingo_preuso,
-(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = '1660478400000' AND temp_preuso.observaciones IS NOT NULL ) AS domingo_noconf
+(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = '"+epoch(getDomingo(datePickerFechaAsignacion.get()))+"') AS domingo_preuso,
+(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = '"+epoch(getDomingo(datePickerFechaAsignacion.get()))+"' AND temp_preuso.observaciones IS NOT NULL ) AS domingo_noconf
 
 FROM app_equipo")
 
