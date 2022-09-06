@@ -35,7 +35,7 @@ App {
 
     property FileFolder sqlFolder: AppFramework.userHomeFolder.folder("ArcGIS/Data/Sql")
     property SqlTableModel sqlTableModel
-    //property string fecha: '27/08/2022'
+    property date datefilter
 
     SqlDatabase{
         id: db
@@ -175,7 +175,7 @@ App {
                                 width: parent.width
 
                                 Text {
-
+                                    y: 50
                                     text: "Seleccione una Fecha"
                                     font.pixelSize: 20
                                     anchors.centerIn: parent
@@ -221,6 +221,7 @@ App {
                                                     opacity: 1
                                                 }
                                                 onClicked: {
+                                                    datefilter = datePickerFechaAsignacion.get()
                                                     getLunes(datePickerFechaAsignacion.get())
                                                     getMartes(datePickerFechaAsignacion.get())
                                                     getMiercoles(datePickerFechaAsignacion.get())
@@ -280,7 +281,9 @@ App {
                                 x: rango_fecha.width-30
                                 y: (rango_fecha.height-rec_flecha_der.height)/2
                                 Button{
-                                    onClicked: cambiarFecha(fecha, 7)
+                                    onClicked: {
+                                        cambiarFecha(datefilter, 7)
+                                    }
                                     width: 25
                                     height: 20
                                     background: Rectangle{
@@ -305,7 +308,11 @@ App {
                                 x: rango_fecha.x-190
                                 y: (rango_fecha.height-rec_flecha_der.height)/2
                                 Button{
-                                    onClicked: cambiarFecha(fecha, -7)
+                                    onClicked: {
+                                        //datefilter =
+                                        cambiarFecha(datefilter, -7)
+
+                                    }
                                     width: 25
                                     height: 20
                                     background: Rectangle{
@@ -851,35 +858,31 @@ App {
     }
 
 
-    function cambiarFecha(fecha, dias){
+    function cambiarFecha (fecha, dias){
+      console.log(fecha)
+      console.log(dias)
+      console.log(fecha.getDate())
       fecha.setDate(fecha.getDate() + dias);
+      getLunes(fecha)
+      getMartes(fecha)
+      getMiercoles(fecha)
+      getJueves(fecha)
+      getViernes(fecha)
+      getSabado(fecha)
+      getDomingo(fecha)
+      datefilter.setDate(datefilter.getDate()+dias)
+      console.log(fecha)
       return fecha;
     }
 
-    function epoch (date) {
-            var result = date.valueOf()
-            var resultado = Number(result) - 1658789121600000
-            console.log("el resultado es: "+resultado)
-            return result
-        }
-
-    function alerta_random (){
-        var min = Math.ceil(1);
-        var max = Math.floor(4);
-        var numero = Math.floor(Math.random() * (max - min) + min)
-
-        if(numero == 1){
-            return "check.png"
-        }
-        if(numero == 2){
-            return "x.png"
-        }
-        if(numero == 3){
-            return "alerta.png"
+    function epoch (numero){
+            var result = numero;
+            var resultado = numero - 1658789121600000;
+            //console.log(resultado);
+            return resultado
         }
 
 
-    }
     function alertaIcon (numero, noconf){
 
         if(numero > 0){
@@ -899,7 +902,7 @@ App {
     function getLunes(fecha) {
           //const date = new Date(parseInt(fecha)).toLocaleString(Qt.locale("es_CL"),"dd-MM-yyyy")
           const date = fecha;
-          console.log(fecha)
+          //console.log(fecha)
           const today = date.getDate();
           const currentDay = date.getDay();
           const newDate = date.setDate(today - currentDay + 1);
@@ -910,7 +913,9 @@ App {
           var lunes_final = `${day}/${month}/${year}`;
           fecha_lunes.text = lunes_final;
           fecha_inicio.text = lunes_final;
-          console.log(lunes.valueOf())
+          //console.log(typeof lunes.valueOf())
+          //console.log(lunes.valueOf())
+
           return lunes;
         }
      function getMartes(fecha) {
@@ -925,7 +930,7 @@ App {
           var day = date.getDate();
           var martes_final = `${day}/${month}/${year}`;
           fecha_martes.text = martes_final;
-          console.log(martes.valueOf())
+          //console.log(martes.valueOf())
           return martes;
         }
      function getMiercoles(fecha) {
@@ -939,7 +944,7 @@ App {
           var day = date.getDate();
           var miercoles_final = `${day}/${month}/${year}`;
           fecha_miercoles.text = miercoles_final;
-          console.log(miercoles.valueOf())
+          //console.log(miercoles.valueOf())
           return miercoles;
         }
      function getJueves(fecha) {
@@ -953,7 +958,7 @@ App {
           var day = date.getDate();
           var jueves_final = `${day}/${month}/${year}`;
           fecha_jueves.text = jueves_final;
-          console.log(jueves.valueOf())
+          //console.log(jueves.valueOf())
           return jueves;
         }
      function getViernes(fecha) {
@@ -967,7 +972,7 @@ App {
           var day = date.getDate();
           var viernes_final = `${day}/${month}/${year}`;
           fecha_viernes.text = viernes_final;
-          console.log(viernes.valueOf())
+          //console.log(viernes.valueOf())
           return viernes;
         }
      function getSabado(fecha) {
@@ -981,7 +986,7 @@ App {
           var day = date.getDate();
           var sabado_final = `${day}/${month}/${year}`;
           fecha_sabado.text = sabado_final;
-          console.log(sabado.valueOf())
+          //console.log(sabado.valueOf())
           return sabado;
         }
      function getDomingo(fecha) {
@@ -996,8 +1001,9 @@ App {
           var domingo_final = `${day}/${month}/${year}`;
           fecha_domingo.text = domingo_final;
           fecha_final.text = domingo_final;
-          console.log(domingo.valueOf())
-          return domingo;
+          //console.log(epoch(domingo.valueOf()));
+          //console.log(domingo.valueOf())
+          return epoch(domingo.valueOf());
         }
 
     ListModel{
@@ -1049,8 +1055,8 @@ FROM app_equipo")
 FROM app_equipo")
 
         let q7 = db.query("SELECT equipo,
-(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = '"+epoch(getDomingo(datePickerFechaAsignacion.get()))+"') AS domingo_preuso,
-(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = '"+epoch(getDomingo(datePickerFechaAsignacion.get()))+"' AND temp_preuso.observaciones IS NOT NULL ) AS domingo_noconf
+(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = "+getDomingo(datePickerFechaAsignacion.get())+") AS domingo_preuso,
+(SELECT count(temp_preuso.equipo) FROM temp_formularios_consolidados as temp_preuso WHERE temp_preuso.equipo = app_equipo.equipo AND temp_preuso.fecha = "+getDomingo(datePickerFechaAsignacion.get())+" AND temp_preuso.observaciones IS NOT NULL ) AS domingo_noconf
 
 FROM app_equipo")
 
